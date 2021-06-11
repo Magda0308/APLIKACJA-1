@@ -168,33 +168,43 @@ if k == 'pierwsza klasa':
         cena_biletu = cena_na_osobe + 360 + podstawa
         print('Twój bagaż podręczny przekracza 8kg! Cena biletu wzrosła do',round(cena_biletu,2),'zł')
         
+        import datetime
+    
+t = (s/800 + 0.3)*3600
 
-mapa = input('Wybierz rodzaj mapy: \n MAPA SATELITARNA wpisz MS \n MAPA POLITYCZNA wpisz MP \n')
+time = str(datetime.timedelta(seconds=t))
+print("Przewdywany czas lotu",time,'h' )
 
-if mapa == 'MP':
+import requests, json
+  
 
-    lb = np.rad2deg(lB)
-    la = np.rad2deg(lA)
-    fa = np.rad2deg(fA)
-    fb = np.rad2deg(fB)
-
-    plt.figure(figsize = (20,20))
-    h = 1000.
-    m = Basemap(projection='nsper',lon_0=(la+lb)/2,lat_0=(fa+fb)/2,
-        satellite_height=h*1000.,resolution='l')
-    #m = Basemap(projection='merc',llcrnrlon=-15,llcrnrlat=35,urcrnrlon=69,
-    #urcrnrlat=72, lat_ts=0, resolution='l')
-    m.drawmapboundary(fill_color='#B5DAFE') #oceany
-    m.fillcontinents(color='#77C4A8',lake_color='#B5DAFE')
-    m.drawcountries(color='black',linewidth=1)
-    m.drawstates(linewidth = 0.2)
-    m.drawcoastlines()
-    #m.bluemarble() wygląd podobny do satelity ale bez granic państw
-    Points = {a:(fa,la),b:(fb,lb)}
-    Lon = [Points[key][0] for key in Points]
-    Lat = [Points[key][1] for key in Points]
-    X, Y = m(Lat,Lon)
-    m.scatter(X,Y,zorder=5,s=200,color="red",marker="^")
-    x, y = m.gcpoints(Lat[0],Lon[0],Lat[1],Lon[1],500)
-    plt.plot(x,y,color="#E59D59",linewidth=5)
-    plt.show()
+api_key = "f9f59afb6ef10c4cc9553041ea8d9882"
+base_url = "http://api.openweathermap.org/data/2.5/weather?"
+city_name = input("Sprawdź pogodę w: ")
+complete_url = base_url + "appid=" + api_key + "&q=" + city_name
+response = requests.get(complete_url)
+x = response.json()
+if x["cod"] != "404":
+  
+    
+    y = x["main"]
+  
+    
+    current_temperature = y["temp"]
+  
+   
+    current_pressure = y["pressure"]
+  
+    
+    current_humidiy = y["humidity"]
+ 
+   
+    print(" Temperatura (w stopniach Celcjusza) = " +
+                    str(round(current_temperature-273.15,1)) + 
+          "\n cisnienie (w hPa) = " +
+                    str(current_pressure) +
+          "\n wilgotnosć (w procentach) = " +
+                    str(current_humidiy))
+           
+else:
+     print(" Miasta nie znaleziono ")
